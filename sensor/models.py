@@ -27,3 +27,11 @@ class sensor_data(models.Model):
 
 	def __str__(self):
 		return self.sensor_id
+
+
+class user(models.Model):
+	userid = models.CharField(max_length=100)
+	password = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.userid
