@@ -106,39 +106,39 @@ STATIC_URL = '/static/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'shoreline',
-#         'USER': 'postgres',
-#         'PASSWORD': 'zxcv',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
-# DATABASE_USER1 = 'postgres'
-# DATABASE_NAME1 = 'shoreline'
-# DATABASE_PASS1 = 'zxcv'
-# DATABASE_HOST1 = '127.0.0.1'
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbuub6t1aaqqn4',
-        'USER': 'jmmnjgarwyrlss',
-        'PASSWORD': 'ce69db05fc88e89dfd866e188e9e150603d60527a66e3f814193e0bc4360a039',
-        'HOST': 'ec2-34-196-238-94.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'NAME': 'shoreline',
+        'USER': 'postgres',
+        'PASSWORD': 'zxcv',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
+DATABASE_USER1 = 'postgres'
+DATABASE_NAME1 = 'shoreline'
+DATABASE_PASS1 = 'zxcv'
+DATABASE_HOST1 = '127.0.0.1'
 
-DATABASE_USER1 = 'jmmnjgarwyrlss'
-DATABASE_NAME1 = 'dbuub6t1aaqqn4'
-DATABASE_PASS1 = 'ce69db05fc88e89dfd866e188e9e150603d60527a66e3f814193e0bc4360a039'
-DATABASE_HOST1 = 'ec2-34-196-238-94.compute-1.amazonaws.com'
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'dbuub6t1aaqqn4',
+#         'USER': 'jmmnjgarwyrlss',
+#         'PASSWORD': 'ce69db05fc88e89dfd866e188e9e150603d60527a66e3f814193e0bc4360a039',
+#         'HOST': 'ec2-34-196-238-94.compute-1.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
+
+
+# DATABASE_USER1 = 'jmmnjgarwyrlss'
+# DATABASE_NAME1 = 'dbuub6t1aaqqn4'
+# DATABASE_PASS1 = 'ce69db05fc88e89dfd866e188e9e150603d60527a66e3f814193e0bc4360a039'
+# DATABASE_HOST1 = 'ec2-34-196-238-94.compute-1.amazonaws.com'
 
 
 

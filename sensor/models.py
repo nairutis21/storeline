@@ -13,7 +13,7 @@ class device(models.Model):
 		return self.device_name
 
 class sensor(models.Model):
-	sensor_type = models.CharField(max_length=10,null=True, blank=True)
+	sensor_type = models.CharField(max_length=60,null=True, blank=True)
 	device_id = models.ForeignKey('device',on_delete=models.CASCADE,null=True, blank=True)
 
 	def __str__(self):

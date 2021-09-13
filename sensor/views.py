@@ -28,83 +28,110 @@ def hello(requests):
 
 @csrf_exempt
 def add_device(request):
-	print(request.POST,"~~~~~~~~~~~")
-	params = None
 
-	data=request.POST
+	try:
+		params = None
+		data=request.POST
 
-	#call to check if device already exists with the name	
-	device_obj = device.objects.filter(device_name=data['device'])
-	if not device_obj:  
-		device.objects.create(device_name=data['device']) # add device to device table
+		#call to check if device already exists with the name	
+		device_obj = device.objects.filter(device_name=data['device'])
+		if not device_obj:  
+			device.objects.create(device_name=data['device']) # add device to device table
 
-	
-	device_obj = device.objects.filter(device_name=data['device'])
-	sensor_obj = sensor.objects.filter(device_id=obj[0].id)
+		
+			device_obj = device.objects.filter(device_name=data['device'])
+			sensor_obj = sensor.objects.filter(device_id=device_obj[0].id)
 
-	#add sensor data to sensor table if not present already
-	if not sensor_obj:
-		sensor.objects.create(device_id=device_obj[0],sensor_type='Pressure')
-		sensor.objects.create(device_id=device_obj[0],sensor_type='Temp')
+			#add sensor data to sensor table if not present already
+			if not sensor_obj:
+				sensor.objects.create(device_id=device_obj[0],sensor_type='Pressure')
+				sensor.objects.create(device_id=device_obj[0],sensor_type='Temperature')
 
-	print("success",device_obj[0])
+			print("success",device_obj[0])
+			return JsonResponse(('Device, device id = '+str(device_obj[0].id) +' sensor type - 1. Temperature 2. Pressure  added successfully.'),safe=False)
+
+		else:
+			return JsonResponse(('Device exists with the same name, device id = '+str(device_obj[0].id)),safe=False)
+
+	except:
+		return JsonResponse(('Something went wrong'),safe=False)
 
 
 
 @csrf_exempt
 def update_device(request):
 
-	device_id=request.GET.get('device_id')
-	data=request.POST
+	try:
+		device_id=request.GET.get('device_id')
+		data=request.POST
+		device_obj = device.objects.filter(id=device_id)	
 
-	device_obj = device.objects.filter(id=device_id)
-	if device_obj:  
-		device.objects.filter(id=device_id).update(device_name=data['device']) #update device name
+		if device_obj:  #if device exists update its name
+			device.objects.filter(id=device_id).update(device_name=data['device']) #update device name
+			return JsonResponse(('Device name updated, device id = '+str(device_obj[0].id)),safe=False)
+		else:
+			return JsonResponse(('No device to update'),safe=False)
 
-
-	print("success")
-	return HttpResponse(status=200)
+	except:
+		return JsonResponse(('Something went wrong'),safe=False)
 
 
 
 @csrf_exempt
 def add_sensor_data(request):
-	date = datetime.now()
-	data = request.POST
-	device_obj = device.objects.filter(id=data['device_id'])
 
-	if device_obj:    #if device exists add its continous data to sensor_data table
-		sensor_obj=sensor.objects.filter(device_id=device_obj[0],sensor_type=data['sensor_type'])
-		sensor_data.objects.create(data_time=date,data=data['sensor_data'],sensor_id=sensor_obj[0])
+	try:
+		date = datetime.now()
+		data = request.POST
+		device_obj = device.objects.filter(id=data['device_id'])
 
-	return HttpResponse(status=200)
+		if device_obj:    #if device exists add its continous data to sensor_data table
+			sensor_obj=sensor.objects.filter(device_id=device_obj[0],sensor_type=data['sensor_type'])
+			sensor_data.objects.create(data_time=date,data=data['sensor_data'],sensor_id=sensor_obj[0])
+
+			return  JsonResponse(('Data added successfully : device_id = ' + str(device_obj[0]) + ', sensor_type = '+str(data['sensor_type']) + ', data = '+str(data['sensor_data'])),safe=False)
+
+		else:
+			return  JsonResponse(('No data from : device_id = ' + str(device_obj[0])),safe=False)
+
+
+	except:
+		return JsonResponse(('Something went wrong'),safe=False)
+
 
 
 
 @csrf_exempt
 def get_sensor_data(request):
-	device_id = request.GET.get('device_id')
 
+	try: # query to get the device_name, sensor_type(pressure/temperature), sensor_data based on time and device_id imput
+		device_id = request.GET.get('device_id')
+		start_time=request.GET.get('start_time')
+		end_time=request.GET.get('end_time')
 
-	start_time=request.GET.get('start_time')
-	end_time=request.GET.get('end_time')
+		
+		select_query = '''SELECT sd.device_name,ss.sensor_type,ssd.data from 
+		sensor_device sd inner join sensor_sensor ss on sd.id=ss.device_id_id
+		inner join sensor_sensor_data ssd on ssd.sensor_id_id=ss.id where 
+		ssd.data_time>='{}' and ssd.data_time<='{}' and sd.id={}	
+		'''.format(start_time,end_time,device_id)
 
-	# query to get the device_name, sensor_type(pressure/temperature), sensor_data based on time and device_id imput
-	select_query = '''SELECT sd.device_name,ss.sensor_type,ssd.data from 
-	sensor_device sd inner join sensor_sensor ss on sd.id=ss.device_id_id
-	inner join sensor_sensor_data ssd on ssd.sensor_id_id=ss.id where 
-	ssd.data_time>='{}' and ssd.data_time<='{}' and sd.id={}	
-	'''.format(start_time,end_time,device_id)
+		print(select_query)
+		cursor = db_connect()
+		cursor.execute(select_query)
 
-	print(select_query)
-	cursor = db_connect()
-	cursor.execute(select_query)
+		query_result = [ dict(line) for line in [zip([ column[0] for column in cursor.description], row) for row in cursor.fetchall()] ]
+		print(query_result) 
+		if query_result:
+			return JsonResponse((query_result),safe=False)
+		else:
+			return JsonResponse(('No data for the given inputs.'),safe=False)
 
-	query_result = [ dict(line) for line in [zip([ column[0] for column in cursor.description], row) for row in cursor.fetchall()] ]
-	print(query_result) 
+	except:
+		return JsonResponse(('Something went wrong'),safe=False)
 
 	
-	return JsonResponse((query_result),safe=False)
+	
 
 
 
