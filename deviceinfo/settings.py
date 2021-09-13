@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+from datetime import timedelta
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print (BASE_DIR,"fdygdfhf")
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'sensor',
 ]
 
@@ -59,13 +60,20 @@ ROOT_URLCONF = 'deviceinfo.urls'
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
+
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+        'rest_framework.permissions.IsAuthenticated',
+         'rest_framework.permissions.IsAdminUser',
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+     )
 }
 
 TEMPLATES = [
@@ -109,7 +117,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shoreline',
+        'NAME': 'storeline',
         'USER': 'postgres',
         'PASSWORD': 'zxcv',
         'HOST': 'localhost',
@@ -118,28 +126,9 @@ DATABASES = {
 }
 
 DATABASE_USER1 = 'postgres'
-DATABASE_NAME1 = 'shoreline'
+DATABASE_NAME1 = 'storeline'
 DATABASE_PASS1 = 'zxcv'
 DATABASE_HOST1 = '127.0.0.1'
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'dbuub6t1aaqqn4',
-#         'USER': 'jmmnjgarwyrlss',
-#         'PASSWORD': 'ce69db05fc88e89dfd866e188e9e150603d60527a66e3f814193e0bc4360a039',
-#         'HOST': 'ec2-34-196-238-94.compute-1.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
-
-
-# DATABASE_USER1 = 'jmmnjgarwyrlss'
-# DATABASE_NAME1 = 'dbuub6t1aaqqn4'
-# DATABASE_PASS1 = 'ce69db05fc88e89dfd866e188e9e150603d60527a66e3f814193e0bc4360a039'
-# DATABASE_HOST1 = 'ec2-34-196-238-94.compute-1.amazonaws.com'
-
 
 
 # Channels
@@ -153,3 +142,27 @@ CHANNEL_LAYERS = {
 }
 
 
+JWT_AUTH = {
+  'JWT_ENCODE_HANDLER':
+  'rest_framework_jwt.utils.jwt_encode_handler',  'JWT_DECODE_HANDLER':
+  'rest_framework_jwt.utils.jwt_decode_handler',  'JWT_PAYLOAD_HANDLER':
+  'rest_framework_jwt.utils.jwt_payload_handler',  'JWT_PAYLOAD_GET_USER_ID_HANDLER':
+  'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',  'JWT_RESPONSE_PAYLOAD_HANDLER':
+  'rest_framework_jwt.utils.jwt_response_payload_handler',
+ 
+  'JWT_SECRET_KEY': 'SECRET_KEY',
+  'JWT_GET_USER_SECRET_KEY': None,
+  'JWT_PUBLIC_KEY': None,
+  'JWT_PRIVATE_KEY': None,
+  'JWT_ALGORITHM': 'HS256',
+  'JWT_VERIFY': True,
+  'JWT_VERIFY_EXPIRATION': True,
+  'JWT_LEEWAY': 0,
+  'JWT_EXPIRATION_DELTA': timedelta(days=30),
+  'JWT_AUDIENCE': None,
+  'JWT_ISSUER': None,
+  'JWT_ALLOW_REFRESH': False,
+  'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
+  'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+  'JWT_AUTH_COOKIE': None,
+}

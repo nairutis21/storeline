@@ -15,14 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from sensor.views import hello,add_device,update_device,add_sensor_data,get_sensor_data
+from sensor.views import add_device,update_device,add_sensor_data,get_sensor_data,create_user,login
 from django.views.generic import TemplateView
 from django.conf.urls import url, include
 import django
 
 
+#api urls
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('create_user/',create_user),
+    path('login/',login),
     path('add_device/',add_device),
     path('update_device/',update_device),
     path('sensor_data/',add_sensor_data),
