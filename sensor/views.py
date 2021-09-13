@@ -22,7 +22,7 @@ JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_SECONDS = 3600
 
 def db_connect(): #database
-	connection=psycopg2.connect(user = settings.DATABASE_USER1,password = settings.DATABASE_PASS1,host = settings.DATABASE_HOST1,port = "5432",database = settings.DATABASE_NAME1)
+	connection=psycopg2.connect(user = settings.DATABASE_USER,password = settings.DATABASE_PASS,host = settings.DATABASE_HOST,port = "5432",database = settings.DATABASE_NAME)
 	return connection.cursor()
 
 

@@ -125,10 +125,10 @@ DATABASES = {
     }
 }
 
-DATABASE_USER1 = 'postgres'
-DATABASE_NAME1 = 'storeline'
-DATABASE_PASS1 = 'zxcv'
-DATABASE_HOST1 = '127.0.0.1'
+DATABASE_USER = 'postgres'
+DATABASE_NAME = 'storeline'
+DATABASE_PASS = 'zxcv'
+DATABASE_HOST = '127.0.0.1'
 
 
 # Channels
