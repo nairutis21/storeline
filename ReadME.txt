@@ -5,6 +5,9 @@
 5. python3 manage.py runserver
 6. migrate the changes.
 
+settings file : deviceinfo/settings.py
+source code : sensor/views.py
+
 ========= Database schema =======
 
 device:
