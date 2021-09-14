@@ -12,6 +12,7 @@ id = primary key
 device_name = CharField
 	
 sensor:
+id = primary key
 sensor_type = CharField
 device_id = ForeignKey('device')
 
