@@ -38,7 +38,7 @@ def create_user(request):
 
 
 
-# login function - create auth token
+# login function - creates auth token
 @csrf_exempt
 def login(request):
 
@@ -62,17 +62,18 @@ def login(request):
         return json_response({'message': 'Wrong credentials'}, status=400)
 
 
+'''Call to add device-
+request accepts device_name to add'''
+
 @csrf_exempt
-def add_device(request):   #call to check if device already exists with the name
+def add_device(request):   
 
 	try:
 		#read header and decode token
 		jwt_token = request.META['HTTP_AUTHORIZATION']		
 		auth = jwt_decode(jwt_token)
-
 		if auth:
 			data=request.POST
-
 			device_obj = device.objects.filter(device_name=data['device'])
 			if not device_obj:  
 				device.objects.create(device_name=data['device']) # add device to device table
@@ -94,8 +95,10 @@ def add_device(request):   #call to check if device already exists with the name
 		return JsonResponse(('Autherization failed'),safe=False)
 
 
+'''Call to update device name
+request accepts device_name to update'''
 @csrf_exempt
-def update_device(request):   #if device exists update its name
+def update_device(request):   
 
 	try:
 		jwt_token = request.META['HTTP_AUTHORIZATION']		
@@ -107,7 +110,7 @@ def update_device(request):   #if device exists update its name
 			device_obj = device.objects.filter(id=device_id)	
 
 			if device_obj:  
-				device.objects.filter(id=device_id).update(device_name=data['device']) #update device name
+				device.objects.filter(id=device_id).update(device_name=data['device']) #updates device name
 				return JsonResponse(('Device name updated from ' + str(device_obj[0].device_name) + ' to '+ data['device'] + ' , device id = '+str(device_obj[0].id)),safe=False)
 			else:
 				return JsonResponse(('No device to update'),safe=False)
@@ -117,9 +120,10 @@ def update_device(request):   #if device exists update its name
 		return JsonResponse(('Autherization failed'),safe=False)
 
 
-
+'''Call to add sensor data 
+request accepts device_id,sensor_type,sensor_data to add'''
 @csrf_exempt
-def add_sensor_data(request):    #if device exists add its continous data to sensor_data table
+def add_sensor_data(request):    
 
 	try:
 		jwt_token = request.META['HTTP_AUTHORIZATION']		
@@ -143,9 +147,9 @@ def add_sensor_data(request):    #if device exists add its continous data to sen
 		return JsonResponse(('Autherization failed'),safe=False)
 
 
-
+'''Call to query the sensor data for a time period'''
 @csrf_exempt
-def get_sensor_data(request):   # query to get the device_name, sensor_type(pressure/temperature), sensor_data based on time and device_id imput
+def get_sensor_data(request):  
 
 	try:
 		jwt_token = request.META['HTTP_AUTHORIZATION']		
@@ -156,7 +160,7 @@ def get_sensor_data(request):   # query to get the device_name, sensor_type(pres
 			start_time=request.GET.get('start_time')
 			end_time=request.GET.get('end_time')
 
-			
+			#query to get sensor data
 			select_query = '''SELECT sd.device_name,ss.sensor_type,ssd.data from 
 			sensor_device sd inner join sensor_sensor ss on sd.id=ss.device_id_id
 			inner join sensor_sensor_data ssd on ssd.sensor_id_id=ss.id where 
@@ -180,7 +184,7 @@ def get_sensor_data(request):   # query to get the device_name, sensor_type(pres
 
 
 
-# jwt token decode
+# function for jwt token decode
 def jwt_decode(token):
 
 	token=token.split(' ')[1]
