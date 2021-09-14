@@ -29,7 +29,6 @@ def db_connect(): #database
 #function to create user
 @csrf_exempt
 def create_user(request):
-	print("hello")
 	username=request.GET.get('user')
 	password = request.GET.get('password')
 	user.objects.create(userid=username,password=password)
@@ -37,15 +36,11 @@ def create_user(request):
 	return JsonResponse(('User created'),safe=False)
 
 
-
 # login function - creates auth token
 @csrf_exempt
 def login(request):
 
     post_data = request.POST
-
-    print(post_data,"post_data")
-
     user1= user.objects.filter(userid=post_data['email'])
     if str(user1[0].password) == str(post_data['password']):
         payload = {
@@ -64,7 +59,6 @@ def login(request):
 
 '''Call to add device-
 request accepts device_name to add'''
-
 @csrf_exempt
 def add_device(request):   
 
@@ -76,8 +70,7 @@ def add_device(request):
 			data=request.POST
 			device_obj = device.objects.filter(device_name=data['device'])
 			if not device_obj:  
-				device.objects.create(device_name=data['device']) # add device to device table
-			
+				device.objects.create(device_name=data['device']) # add device to device table			
 				device_obj = device.objects.filter(device_name=data['device'])
 				sensor_obj = sensor.objects.filter(device_id=device_obj[0].id)
 
@@ -85,7 +78,6 @@ def add_device(request):
 					sensor.objects.create(device_id=device_obj[0],sensor_type='Pressure')
 					sensor.objects.create(device_id=device_obj[0],sensor_type='Temperature')
 
-				print("success",device_obj[0])
 				return JsonResponse(('Device, device id = '+str(device_obj[0].id) +' sensor type - 1. Temperature 2. Pressure  added successfully.'),safe=False)
 			else:
 				return JsonResponse(('Device exists with the same name, device id = '+str(device_obj[0].id)),safe=False)
@@ -167,12 +159,10 @@ def get_sensor_data(request):
 			ssd.data_time>='{}' and ssd.data_time<='{}' and sd.id={}	
 			'''.format(start_time,end_time,device_id)
 
-			print(select_query)
 			cursor = db_connect()
 			cursor.execute(select_query)
 
 			query_result = [ dict(line) for line in [zip([ column[0] for column in cursor.description], row) for row in cursor.fetchall()] ]
-			print(query_result) 
 			if query_result:
 				return JsonResponse((query_result),safe=False)
 			else:
@@ -192,10 +182,7 @@ def jwt_decode(token):
 	decode=jwt.decode(token, JWT_SECRET, JWT_ALGORITHM)
 
 	userid = decode['user_id']
-
 	user_obj = user.objects.filter(userid=userid)
-	print(user_obj,"user_obj")
-
 	if user_obj.exists():
 		return True
 	else:
